@@ -1,0 +1,136 @@
+---
+title: "Uvod v dplyr"
+author: "Roman Luštrik"
+date: "10.2.2015"
+output: 
+  html_document:
+    theme: cerulean
+    highlight: default
+---
+
+V tem tutorialu bomo stopali po stopinjah, kot so jih zagazili v [Introduction to dplyr for Faster Data Manipulation in R](https://rpubs.com/justmarkham/dplyr-tutorial).
+
+```{r}
+library(dplyr)
+library(hflights)
+library(ggplot2)
+
+fl <- tbl_df(hflights)
+```
+
+`hflights` so podatki odhodov s Houstonskega letališča.
+
+Glagoli, ki jih uporabljamo za manipulacijo s podatki so:
+
+ * `filter` izbira vrstice glede na argument
+ * `select` izbira stolpce glede na argument
+ * `arrange` sortira podatke
+ * `mutate` dodaja spremenljivke
+ * `summarize` povzema spremenljivke v eno številko
+
+## filter
+
+Filter izbira vrstice, ki zadostijo določenim pogojem. Na voljo imamo vse R-jeve logične operatorje.
+
+Najdimo vse lete, ki so pristali na letališčih LEX ali JFK.
+```{r}
+filter(fl, Dest %in% c("LEX", "JFK"))
+filter(fl, Dest == "LEX" | Dest == "JFK")
+# kar je enako kot
+lex.jfk <- hflights[hflights$Dest %in% c("LEX", "JFK"), ]
+head(lex.jfk)
+dim(lex.jfk)
+# with(hflights, hflights[Dest %in% c("LEX", "JFK"), ])
+```
+
+Poglejmo vse lete, ki so odleteli v januarju.
+```{r}
+filter(fl, Month == "1")
+```
+
+Izberimo lete, ki so odleteli v januarju, čas potovanja pa je bil krajši od ene ure.
+```{r}
+jan.ura <- filter(fl, Month == "1", ActualElapsedTime <= 60)
+summary(jan.ura)
+```
+
+Poglejmo lete, kjer je nedvoumna oznaka letalske družbe UA ali YV, hkrati pa je čas potovanja krajši od dveh ur.
+```{r}
+filter(fl, (UniqueCarrier == "UA" | UniqueCarrier == "YV") & ActualElapsedTime <= 120) # oklepaji!
+```
+
+Kaj izberemo s tem ukazom?
+```{r cache = TRUE}
+mis1 <- filter(fl, (DayOfWeek == 1 & ActualElapsedTime >= 400) | (DayOfWeek == 7 & ActualElapsedTime < 300))
+
+ggplot(fl, aes(x = DayOfWeek, y = ActualElapsedTime)) +
+  theme_bw() +
+  geom_jitter(alpha = 0.2)
+
+ggplot(mis1, aes(x = DayOfWeek, y = ActualElapsedTime)) +
+  theme_bw() +
+  geom_jitter(alpha = 0.2) +
+  scale_x_discrete(drop = FALSE, limits = 1:7)
+```
+
+## select
+
+Prebiranje stolpec, v pomoč so nam funkcije `starts_with`, `ends_with`, `matches` in `contains`.
+Za razliko od "osnovnega R-ja", znotraj funkcij ni potrebno pisati imena stolpcev v narekovajih. Podobnega smo vajeni že iz paketa `ggplot2`.
+
+```{r}
+select(fl, Year, FlightNum, Origin, Diverted)
+# enako kot
+fl[, c("Year", "FlightNum", "Origin", "Diverted")]
+#enako kot
+select(fl, one_of(c("Year", "DayOfWeek")))
+```
+
+Izberimo stolpcez imeni, kjer se končajo s "Time".
+```{r}
+select(fl, ends_with("Time"))
+```
+
+Lahko tudi kombiniramo več argumentov.
+```{r}
+select(fl, ends_with("Time"), starts_with("Taxi"))
+```
+
+Stolpce lahko filtriramo tudi na podlagi izrazov (`regular expression`). Z ukazom `".th$"` izberemo vse stolpce, katerih imena se končajo s "th".
+```{r}
+select(fl, matches(".th$"))
+```
+
+Seveda lahko izberemo tudi na osnovi mesta v `data.frame`-u.
+```{r}
+xy <- data.frame(spec1 = runif(5), spec2 = runif(5), spec3 = runif(5), spec4 = runif(5), spec5 = runif(5),
+                 envir1 = runif(5), envir2 = runif(5), envir3 = runif(5), envir4 = runif(5), envir5 = runif(5))
+head(xy)
+select(xy, num_range("spec", 3:5))
+```
+
+
+## Veriženje
+
+V tej točki je dobro, da predstavimo koncept veriženja (angl. chaining oz. pipelining). V R-ju navadno ukaze beremo od znotraj oklepajev na ven, npr.
+
+`filter(select(flights, UniqueCarrier, DepDelay), DepDelay > 60)`
+
+bi se prebralo, da izberemo stolpce (`filter`) `UniqueCarrier` in `DepDelay` ter ohranimo samo vrstice (`select`), ki imajo v stolpcu `DepDelay` več kot 60 minut.
+
+Obstaja pa še druga pot, kjer postopek vodimo v vrsticah.
+
+```{r}
+fl %>%
+  select(UniqueCarrier, DepDelay) %>%
+  filter(DepDelay > 60)
+```
+
+
+
+
+
+
+
+
+
