@@ -112,13 +112,15 @@ select(xy, num_range("spec", 3:5))
 
 ## Veriženje
 
-V tej točki je dobro, da predstavimo koncept veriženja (angl. chaining oz. pipelining). V R-ju navadno ukaze beremo od znotraj oklepajev na ven, npr.
+V tej točki je dobro, da predstavimo koncept veriženja (angl. chaining oz. pipelining). V R-ju navadno ukaze beremo od notranjih oklepajev proti zunanjim, npr.
+
+`flights[flights$DepDelay > 60, c("UniqueCarrier", "DepDelay")]`
+
+v osnovni R sintaksi bi se v `dplyr` sintaksi
 
 `filter(select(flights, UniqueCarrier, DepDelay), DepDelay > 60)`
 
-bi se prebralo, da izberemo stolpce (`filter`) `UniqueCarrier` in `DepDelay` ter ohranimo samo vrstice (`select`), ki imajo v stolpcu `DepDelay` več kot 60 minut.
-
-Obstaja pa še druga pot, kjer postopek vodimo v vrsticah.
+bralo kot: izberemo stolpca `UniqueCarrier` in `DepDelay` ter ohranimo samo vrstice, ki imajo v stolpcu `DepDelay` več kot 60 minut. Obstaja pa še druga pot, kjer postopek vodimo v vrsticah.
 
 ```{r}
 fl %>%
@@ -126,7 +128,44 @@ fl %>%
   filter(DepDelay > 60)
 ```
 
+## arrange
 
+Za sortiranje vrednosti v stolcih (spremenljivkah) uporabimo `arrange`.
+
+```{r}
+fl %>% 
+  filter(AirTime > 500) %>%
+  arrange(Month)
+
+fl %>%
+  select(Year, Month, DayofMonth, AirTime, DepDelay) %>%
+  filter(AirTime > 500) %>%
+  arrange(Month, DayofMonth)
+```
+
+Če želimo obrniti vrstni red (padajoče), uporabimo `desc`.
+
+```{r}
+fl %>%
+  select(Year, Month, DayofMonth, AirTime, DepDelay) %>%
+  filter(AirTime > 500) %>%
+  arrange(Month, desc(DayofMonth))
+```
+
+## mutate
+
+Pogosto se zgodi, da izračunamo novo spremenljivko na osnovi že obstoječih spremenljivk. Tu nam je v pomoč funkcija `mutate`.
+
+Izračunajmo kakšen delež časa je letalo v zraku glede na dolžino potovanja od vrat do vrat.
+```{r}
+fl %>%
+  mutate(PropAirTravel = AirTime/ActualElapsedTime) %>%
+  select(PropAirTravel, ActualElapsedTime, AirTime)
+
+ fl %>%
+  mutate(PropAirTravel = ((AirTime/ActualElapsedTime) * 100) %>% round() %>% paste("%")) %>%
+  select(PropAirTravel, ActualElapsedTime, AirTime)
+```
 
 
 
