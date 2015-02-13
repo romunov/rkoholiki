@@ -15,6 +15,10 @@ library(dplyr)
 library(hflights)
 library(ggplot2)
 
+knitr::knit_hooks$set(inline = function(x) {
+  knitr:::format_sci(x, 'md')
+})
+
 fl <- tbl_df(hflights)
 ```
 
@@ -254,7 +258,7 @@ fl %>%
    sample_n(100)
 ```
 
-Lahko vzorčimo kar delež. Tabela ima `nrow(fl)` vrstic. Ena desetina je torej približno `round(nrow(fl)/10)` vrstic.
+Lahko vzorčimo kar delež. Tabela ima `r nrow(fl)` vrstic. Ena desetina je torej približno `r round(nrow(fl)/10)` vrstic.
 
 ```{r}
 fl %>%
