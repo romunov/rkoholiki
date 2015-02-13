@@ -262,13 +262,6 @@ fl %>%
    nrow()
 ```
 
-## Časovne vrste
-
-```{r}
-
-```
-
-
 ## Podatkovne baze
 
 Včasih imamo podatke v različnih bazah, npr. MySQL, SQLite ipd. `dplyr` omogoča klicanje (ne pa tudi manipuliranja v bazi sami) podatkov, manipulacija pa je možna naknadno v R-ju.
