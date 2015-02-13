@@ -128,6 +128,15 @@ fl %>%
   filter(DepDelay > 60)
 ```
 
+Še en primer.
+```{r}
+fl %>%
+  group_by(UniqueCarrier) %>%
+  summarize(count = n()) %>%
+  filter(count > 40000)
+```
+
+
 ## arrange
 
 Za sortiranje vrednosti v stolcih (spremenljivkah) uporabimo `arrange`.
@@ -162,14 +171,133 @@ fl %>%
   mutate(PropAirTravel = AirTime/ActualElapsedTime) %>%
   select(PropAirTravel, ActualElapsedTime, AirTime)
 
- fl %>%
-  mutate(PropAirTravel = ((AirTime/ActualElapsedTime) * 100) %>% round() %>% paste("%")) %>%
-  select(PropAirTravel, ActualElapsedTime, AirTime)
+ fl <- fl %>%
+  mutate(PropAirTravel = ((AirTime/ActualElapsedTime) * 100) %>% round() %>% paste("%")) 
+```
+
+## summarize/summarise
+
+```{r}
+fl %>%
+   summarize(mean = mean(AirTime, na.rm = TRUE),
+             sd = sd(AirTime, na.rm = TRUE))
+ 
+ fl %>% 
+   group_by(DayofMonth, UniqueCarrier) %>%
+   summarize(mean = mean(AirTime, na.rm = TRUE),
+             sd = sd(AirTime, na.rm = TRUE))
+```
+
+Če želimo prešteti število letov v posamezni skupini lahko uporabimo funkcijo  `n()`.
+
+```{r}
+fl %>%
+   group_by(DayofMonth) %>%
+   summarize(count = n())
+```
+
+Za štetje unikatnih vrednosti uporabimo funkcijo `n_distinct()`.
+
+```{r}
+fl %>%
+   group_by(DayofMonth) %>%
+   summarize(unikum = n_distinct(UniqueCarrier))
+```
+
+Bližnica za `n()` je `count`, ki vključuje že funkcijo `group_by()`.
+
+```{r}
+fl %>%
+   count(DayofMonth)
+```
+
+```{r}
+fl %>%
+   group_by(DayofMonth) %>%
+   n_groups()
+ 
+fl %>%
+   group_by(DayofMonth) %>%
+   summarize(n())
+
+# ekvivalentno
+fl %>%
+   group_by(DayofMonth) %>%
+   group_size()
+```
+
+Za vsako destinacijo poiščemo koliko letal je opravilo koliko letov.
+
+```{r}
+fl %>%
+   group_by(Dest) %>%
+   summarize(nflights = n(), nplanes = n_distinct(TailNum))
+```
+
+Za vsako destinacijo najdemo število odpovedanih (0) ali opravljenih (1) letov.
+
+```{r}
+fl %>%
+   group_by(Dest) %>%
+   select(Cancelled) %>%
+   table() %>%
+   head()
+```
+
+## Vzorčenje
+
+Vzorčenje je relativno preprosto.
+
+```{r}
+ set.seed(357)
+fl %>%
+   sample_n(100)
+```
+
+Lahko vzorčimo kar delež. Tabela ima `nrow(fl)` vrstic. Ena desetina je torej približno `round(nrow(fl)/10)` vrstic.
+
+```{r}
+fl %>%
+   sample_frac(0.1) %>%
+   nrow()
+```
+
+## Časovne vrste
+
+```{r}
+
 ```
 
 
+## Podatkovne baze
 
+Včasih imamo podatke v različnih bazah, npr. MySQL, SQLite ipd. `dplyr` omogoča klicanje (ne pa tudi manipuliranja v bazi sami) podatkov, manipulacija pa je možna naknadno v R-ju.
 
+```{r}
+# ustvarimo datoteko s končnico sqlite3
+my.db <- src_sqlite("my_db.sqlite3", create = TRUE)
+# creates an empty file
+library(nycflights13)
 
+# v kolikor datoteka še ni naseljena z bazo, to storimo s funkcijo copy_to - v bazo kopiramo
+# data.frame flights in paketa nycflights13
+flights.db <- copy_to(my.db, flights, temporary = FALSE, 
+                        indexes = list(c("year", "month", "day"), "carrier", "tailnum"))
 
+# flights.db <- tbl(my.db, "flights")
 
+# dostop do baze, kjer kličemo tabelo "flights" eksplicitno
+out <- tbl(my.db, sql("SELECT tailnum, distance FROM flights WHERE distance > 1000"))
+
+# neposreden dostop do tabele "flights"
+flights.db %>% 
+  filter(distance > 1000 & day == 5 & dest == "LAX") %>%
+  mutate(speed = distance/air_time)
+
+flights.db %>%
+  group_by(month) %>%
+  summarize(delay = mean(dep_delay))
+
+RSQLite::dbDisconnect(my.db$con) # zapre povezavo do baze
+unlink("my_db.sqlite3") # pobriše datoteko
+```
