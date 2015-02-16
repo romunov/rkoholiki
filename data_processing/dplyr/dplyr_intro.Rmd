@@ -109,10 +109,10 @@ Stolpce lahko filtriramo tudi na podlagi izrazov (`regular expression`). Z ukazo
 select(fl, matches(".th$"))
 ```
 
-Seveda lahko izberemo tudi na osnovi mesta v `data.frame`-u.
+Stolpce lahko izberemo tudi na osnovi pripone v `data.frame`-u.
 ```{r}
-xy <- data.frame(spec1 = runif(5), spec2 = runif(5), spec3 = runif(5), spec4 = runif(5), spec5 = runif(5),
-                 envir1 = runif(5), envir2 = runif(5), envir3 = runif(5), envir4 = runif(5), envir5 = runif(5))
+xy <- data.frame(envir1 = runif(5), envir2 = runif(5), envir3 = runif(5), envir4 = runif(5), envir5 = runif(5),
+                 spec1 = runif(5), spec2 = runif(5), spec3 = runif(5), spec4 = runif(5), spec5 = runif(5))
 head(xy)
 select(xy, num_range("spec", 3:5))
 ```
