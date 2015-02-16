@@ -44,7 +44,7 @@ Najdimo vse lete, ki so pristali na letališčih LEX ali JFK.
 ```{r}
 filter(fl, Dest %in% c("LEX", "JFK"))
 filter(fl, Dest == "LEX" | Dest == "JFK")
-# kar je enako kot
+# kar je podobno kot
 lex.jfk <- hflights[hflights$Dest %in% c("LEX", "JFK"), ]
 head(lex.jfk)
 dim(lex.jfk)
