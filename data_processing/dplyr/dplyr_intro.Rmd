@@ -24,6 +24,10 @@ fl <- tbl_df(hflights)
 
 `hflights` so podatki odhodov s Houstonskega letališča.
 
+```{r}
+print(fl)
+```
+
 Glagoli, ki jih uporabljamo za manipulacijo s podatki so:
 
  * `filter` izbira vrstice glede na argument
