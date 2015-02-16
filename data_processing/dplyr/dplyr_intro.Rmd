@@ -261,7 +261,7 @@ fl %>%
 Vzorčenje je relativno preprosto.
 
 ```{r}
- set.seed(357)
+set.seed(357)
 fl %>%
    sample_n(100)
 ```
