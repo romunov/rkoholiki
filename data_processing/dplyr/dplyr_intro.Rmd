@@ -181,6 +181,10 @@ fl %>%
 
  fl <- fl %>%
   mutate(PropAirTravel = ((AirTime/ActualElapsedTime) * 100) %>% round() %>% paste("%")) 
+
+# print out the new result
+fl  %>% 
+  select(PropAirTravel, ActualElapsedTime, AirTime)
 ```
 
 ## summarize/summarise
