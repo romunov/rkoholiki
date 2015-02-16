@@ -147,7 +147,7 @@ fl %>%
 
 ## arrange
 
-Za sortiranje vrednosti v stolcih (spremenljivkah) uporabimo `arrange`.
+Za sortiranje vrednosti v stolpcih (spremenljivkah) uporabimo `arrange`.
 
 ```{r}
 fl %>% 
