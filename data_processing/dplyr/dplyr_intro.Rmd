@@ -24,6 +24,10 @@ fl <- tbl_df(hflights)
 
 `hflights` so podatki odhodov s Houstonskega letališča.
 
+```{r}
+print(fl)
+```
+
 Glagoli, ki jih uporabljamo za manipulacijo s podatki so:
 
  * `filter` izbira vrstice glede na argument
@@ -40,7 +44,7 @@ Najdimo vse lete, ki so pristali na letališčih LEX ali JFK.
 ```{r}
 filter(fl, Dest %in% c("LEX", "JFK"))
 filter(fl, Dest == "LEX" | Dest == "JFK")
-# kar je enako kot
+# kar je podobno kot
 lex.jfk <- hflights[hflights$Dest %in% c("LEX", "JFK"), ]
 head(lex.jfk)
 dim(lex.jfk)
@@ -79,15 +83,15 @@ ggplot(mis1, aes(x = DayOfWeek, y = ActualElapsedTime)) +
 
 ## select
 
-Prebiranje stolpec, v pomoč so nam funkcije `starts_with`, `ends_with`, `matches` in `contains`.
+Izbiranje stolpcev; v pomoč so nam funkcije `starts_with`, `ends_with`, `matches` in `contains`.
 Za razliko od "osnovnega R-ja", znotraj funkcij ni potrebno pisati imena stolpcev v narekovajih. Podobnega smo vajeni že iz paketa `ggplot2`.
 
 ```{r}
 select(fl, Year, FlightNum, Origin, Diverted)
 # enako kot
 fl[, c("Year", "FlightNum", "Origin", "Diverted")]
-#enako kot
-select(fl, one_of(c("Year", "DayOfWeek")))
+# enako kot
+select(fl, one_of(c("Year", "FlightNum", "Origin", "Diverted")))
 ```
 
 Izberimo stolpcez imeni, kjer se končajo s "Time".
@@ -105,10 +109,10 @@ Stolpce lahko filtriramo tudi na podlagi izrazov (`regular expression`). Z ukazo
 select(fl, matches(".th$"))
 ```
 
-Seveda lahko izberemo tudi na osnovi mesta v `data.frame`-u.
+Stolpce lahko izberemo tudi na osnovi pripone imena stolpca v `data.frame`-u.
 ```{r}
-xy <- data.frame(spec1 = runif(5), spec2 = runif(5), spec3 = runif(5), spec4 = runif(5), spec5 = runif(5),
-                 envir1 = runif(5), envir2 = runif(5), envir3 = runif(5), envir4 = runif(5), envir5 = runif(5))
+xy <- data.frame(envir1 = runif(5), envir2 = runif(5), envir3 = runif(5), envir4 = runif(5), envir5 = runif(5),
+                 spec1 = runif(5), spec2 = runif(5), spec3 = runif(5), spec4 = runif(5), spec5 = runif(5))
 head(xy)
 select(xy, num_range("spec", 3:5))
 ```
@@ -120,11 +124,11 @@ V tej točki je dobro, da predstavimo koncept veriženja (angl. chaining oz. pip
 
 `flights[flights$DepDelay > 60, c("UniqueCarrier", "DepDelay")]`
 
-v osnovni R sintaksi bi se v `dplyr` sintaksi
+v osnovni R sintaksi bi se `dplyr` ukaz
 
 `filter(select(flights, UniqueCarrier, DepDelay), DepDelay > 60)`
 
-bralo kot: izberemo stolpca `UniqueCarrier` in `DepDelay` ter ohranimo samo vrstice, ki imajo v stolpcu `DepDelay` več kot 60 minut. Obstaja pa še druga pot, kjer postopek vodimo v vrsticah.
+bral kot: izberemo stolpca `UniqueCarrier` in `DepDelay` ter ohranimo samo vrstice, ki imajo v stolpcu `DepDelay` več kot 60 minut. Obstaja pa še druga pot, kjer postopek vodimo v vrsticah.
 
 ```{r}
 fl %>%
@@ -143,7 +147,7 @@ fl %>%
 
 ## arrange
 
-Za sortiranje vrednosti v stolcih (spremenljivkah) uporabimo `arrange`.
+Za sortiranje vrednosti v stolpcih (spremenljivkah) uporabimo `arrange`.
 
 ```{r}
 fl %>% 
@@ -167,7 +171,7 @@ fl %>%
 
 ## mutate
 
-Pogosto se zgodi, da izračunamo novo spremenljivko na osnovi že obstoječih spremenljivk. Tu nam je v pomoč funkcija `mutate`.
+Pogosto se zgodi, da želimo izračunati novo spremenljivko na osnovi že obstoječih spremenljivk. Tu nam je v pomoč funkcija `mutate`.
 
 Izračunajmo kakšen delež časa je letalo v zraku glede na dolžino potovanja od vrat do vrat.
 ```{r}
@@ -177,6 +181,10 @@ fl %>%
 
  fl <- fl %>%
   mutate(PropAirTravel = ((AirTime/ActualElapsedTime) * 100) %>% round() %>% paste("%")) 
+
+# print out the new result
+fl  %>% 
+  select(PropAirTravel, ActualElapsedTime, AirTime)
 ```
 
 ## summarize/summarise
@@ -253,7 +261,7 @@ fl %>%
 Vzorčenje je relativno preprosto.
 
 ```{r}
- set.seed(357)
+set.seed(357)
 fl %>%
    sample_n(100)
 ```
