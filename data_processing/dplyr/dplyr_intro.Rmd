@@ -109,7 +109,7 @@ Stolpce lahko filtriramo tudi na podlagi izrazov (`regular expression`). Z ukazo
 select(fl, matches(".th$"))
 ```
 
-Stolpce lahko izberemo tudi na osnovi pripone v `data.frame`-u.
+Stolpce lahko izberemo tudi na osnovi pripone imena stolpca v `data.frame`-u.
 ```{r}
 xy <- data.frame(envir1 = runif(5), envir2 = runif(5), envir3 = runif(5), envir4 = runif(5), envir5 = runif(5),
                  spec1 = runif(5), spec2 = runif(5), spec3 = runif(5), spec4 = runif(5), spec5 = runif(5))
@@ -124,11 +124,11 @@ V tej točki je dobro, da predstavimo koncept veriženja (angl. chaining oz. pip
 
 `flights[flights$DepDelay > 60, c("UniqueCarrier", "DepDelay")]`
 
-v osnovni R sintaksi bi se v `dplyr` sintaksi
+v osnovni R sintaksi bi se `dplyr` ukaz
 
 `filter(select(flights, UniqueCarrier, DepDelay), DepDelay > 60)`
 
-bralo kot: izberemo stolpca `UniqueCarrier` in `DepDelay` ter ohranimo samo vrstice, ki imajo v stolpcu `DepDelay` več kot 60 minut. Obstaja pa še druga pot, kjer postopek vodimo v vrsticah.
+bral kot: izberemo stolpca `UniqueCarrier` in `DepDelay` ter ohranimo samo vrstice, ki imajo v stolpcu `DepDelay` več kot 60 minut. Obstaja pa še druga pot, kjer postopek vodimo v vrsticah.
 
 ```{r}
 fl %>%
