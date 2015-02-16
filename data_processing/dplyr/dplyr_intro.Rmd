@@ -83,15 +83,15 @@ ggplot(mis1, aes(x = DayOfWeek, y = ActualElapsedTime)) +
 
 ## select
 
-Prebiranje stolpec, v pomoč so nam funkcije `starts_with`, `ends_with`, `matches` in `contains`.
+Izbiranje stolpcev; v pomoč so nam funkcije `starts_with`, `ends_with`, `matches` in `contains`.
 Za razliko od "osnovnega R-ja", znotraj funkcij ni potrebno pisati imena stolpcev v narekovajih. Podobnega smo vajeni že iz paketa `ggplot2`.
 
 ```{r}
 select(fl, Year, FlightNum, Origin, Diverted)
 # enako kot
 fl[, c("Year", "FlightNum", "Origin", "Diverted")]
-#enako kot
-select(fl, one_of(c("Year", "DayOfWeek")))
+# enako kot
+select(fl, one_of(c("Year", "FlightNum", "Origin", "Diverted")))
 ```
 
 Izberimo stolpcez imeni, kjer se končajo s "Time".
