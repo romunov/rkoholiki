@@ -171,7 +171,7 @@ fl %>%
 
 ## mutate
 
-Pogosto se zgodi, da izračunamo novo spremenljivko na osnovi že obstoječih spremenljivk. Tu nam je v pomoč funkcija `mutate`.
+Pogosto se zgodi, da želimo izračunati novo spremenljivko na osnovi že obstoječih spremenljivk. Tu nam je v pomoč funkcija `mutate`.
 
 Izračunajmo kakšen delež časa je letalo v zraku glede na dolžino potovanja od vrat do vrat.
 ```{r}
