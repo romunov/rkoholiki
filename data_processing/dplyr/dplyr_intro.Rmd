@@ -10,14 +10,17 @@ output:
 
 V tem tutorialu bomo stopali po stopinjah, kot so jih zagazili v [Introduction to dplyr for Faster Data Manipulation in R](https://rpubs.com/justmarkham/dplyr-tutorial).
 
+```{r echo = FALSE}
+knitr::knit_hooks$set(inline = function(x) {
+  knitr:::format_sci(x, 'md')
+})
+```
+
 ```{r}
 library(dplyr)
 library(hflights)
 library(ggplot2)
-
-knitr::knit_hooks$set(inline = function(x) {
-  knitr:::format_sci(x, 'md')
-})
+library(nycflights13)
 
 fl <- tbl_df(hflights)
 ```
@@ -42,13 +45,23 @@ Filter izbira vrstice, ki zadostijo določenim pogojem. Na voljo imamo vse R-jev
 
 Najdimo vse lete, ki so pristali na letališčih LEX ali JFK.
 ```{r}
-filter(fl, Dest %in% c("LEX", "JFK"))
-filter(fl, Dest == "LEX" | Dest == "JFK")
-# kar je podobno kot
+# "osnovni" R način
 lex.jfk <- hflights[hflights$Dest %in% c("LEX", "JFK"), ]
+# with(hflights, hflights[Dest %in% c("LEX", "JFK"), ])
 head(lex.jfk)
 dim(lex.jfk)
-# with(hflights, hflights[Dest %in% c("LEX", "JFK"), ])
+
+lex.jfk <- filter(fl, Dest %in% c("LEX", "JFK"))
+filter(fl, Dest == "LEX" | Dest == "JFK")
+
+ggplot(lex.jfk, aes(x = AirTime, y = ArrDelay)) +
+  theme_bw() +
+  geom_point()
+
+ggplot(lex.jfk, aes(x = AirTime, y = ArrDelay)) +
+  theme_bw() +
+  geom_point() +
+  facet_wrap(~ Dest)
 ```
 
 Poglejmo vse lete, ki so odleteli v januarju.
@@ -68,7 +81,7 @@ filter(fl, (UniqueCarrier == "UA" | UniqueCarrier == "YV") & ActualElapsedTime <
 ```
 
 Kaj izberemo s tem ukazom?
-```{r cache = TRUE}
+```{r}
 mis1 <- filter(fl, (DayOfWeek == 1 & ActualElapsedTime >= 400) | (DayOfWeek == 7 & ActualElapsedTime < 300))
 
 ggplot(fl, aes(x = DayOfWeek, y = ActualElapsedTime)) +
@@ -87,10 +100,10 @@ Izbiranje stolpcev; v pomoč so nam funkcije `starts_with`, `ends_with`, `matche
 Za razliko od "osnovnega R-ja", znotraj funkcij ni potrebno pisati imena stolpcev v narekovajih. Podobnega smo vajeni že iz paketa `ggplot2`.
 
 ```{r}
+fl[1:6, c("Year", "FlightNum", "Origin", "Diverted")]
+
+# dplyr način
 select(fl, Year, FlightNum, Origin, Diverted)
-# enako kot
-fl[, c("Year", "FlightNum", "Origin", "Diverted")]
-# enako kot
 select(fl, one_of(c("Year", "FlightNum", "Origin", "Diverted")))
 ```
 
@@ -113,7 +126,7 @@ Stolpce lahko izberemo tudi na osnovi pripone imena stolpca v `data.frame`-u.
 ```{r}
 xy <- data.frame(envir1 = runif(5), envir2 = runif(5), envir3 = runif(5), envir4 = runif(5), envir5 = runif(5),
                  spec1 = runif(5), spec2 = runif(5), spec3 = runif(5), spec4 = runif(5), spec5 = runif(5))
-head(xy)
+xy <- tbl_df(xy)
 select(xy, num_range("spec", 3:5))
 ```
 
@@ -131,9 +144,13 @@ v osnovni R sintaksi bi se `dplyr` ukaz
 bral kot: izberemo stolpca `UniqueCarrier` in `DepDelay` ter ohranimo samo vrstice, ki imajo v stolpcu `DepDelay` več kot 60 minut. Obstaja pa še druga pot, kjer postopek vodimo v vrsticah.
 
 ```{r}
-fl %>%
+uc <- fl %>%
   select(UniqueCarrier, DepDelay) %>%
   filter(DepDelay > 60)
+
+ggplot(uc, aes(x = UniqueCarrier, y = DepDelay)) +
+  theme_bw() +
+  geom_boxplot()
 ```
 
 Še en primer.
@@ -160,7 +177,7 @@ fl %>%
   arrange(Month, DayofMonth)
 ```
 
-Če želimo obrniti vrstni red (padajoče), uporabimo `desc`.
+Če želimo obrniti vrstni red sortiranja (padajoče), uporabimo `desc`.
 
 ```{r}
 fl %>%
@@ -175,16 +192,15 @@ Pogosto se zgodi, da želimo izračunati novo spremenljivko na osnovi že obstoj
 
 Izračunajmo kakšen delež časa je letalo v zraku glede na dolžino potovanja od vrat do vrat.
 ```{r}
-fl %>%
+pat <- fl %>%
   mutate(PropAirTravel = AirTime/ActualElapsedTime) %>%
   select(PropAirTravel, ActualElapsedTime, AirTime)
 
- fl <- fl %>%
-  mutate(PropAirTravel = ((AirTime/ActualElapsedTime) * 100) %>% round() %>% paste("%")) 
+pat %>%
+  mutate(PropAirTravel = round(PropAirTravel * 100) %>% paste("%"))
 
-# print out the new result
-fl  %>% 
-  select(PropAirTravel, ActualElapsedTime, AirTime)
+fl <- fl %>%
+  mutate(PropAirTravel = round((AirTime/ActualElapsedTime)*100) %>% paste("%"))
 ```
 
 ## summarize/summarise
@@ -194,10 +210,14 @@ fl %>%
    summarize(mean = mean(AirTime, na.rm = TRUE),
              sd = sd(AirTime, na.rm = TRUE))
  
- fl %>% 
+(stat1 <- fl %>% 
    group_by(DayofMonth, UniqueCarrier) %>%
    summarize(mean = mean(AirTime, na.rm = TRUE),
              sd = sd(AirTime, na.rm = TRUE))
+ )
+
+stat1 %>%
+  filter(UniqueCarrier == "AA")
 ```
 
 Če želimo prešteti število letov v posamezni skupini lahko uporabimo funkcijo  `n()`.
@@ -230,7 +250,7 @@ fl %>%
  
 fl %>%
    group_by(DayofMonth) %>%
-   summarize(n())
+   summarize(count = n())
 
 # ekvivalentno
 fl %>%
@@ -281,8 +301,6 @@ Včasih imamo podatke v različnih bazah, npr. MySQL, SQLite ipd. `dplyr` omogo�
 ```{r}
 # ustvarimo datoteko s končnico sqlite3
 my.db <- src_sqlite("my_db.sqlite3", create = TRUE)
-# creates an empty file
-library(nycflights13)
 
 # v kolikor datoteka še ni naseljena z bazo, to storimo s funkcijo copy_to - v bazo kopiramo
 # data.frame flights in paketa nycflights13
