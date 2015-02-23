@@ -1,0 +1,96 @@
+---
+title: "Uvod v Git & GitHub"
+author: "Črt Ahlin"
+date: "23.02.2015"
+output:
+  html_document:
+    theme: cerulean
+    toc: yes
+---
+
+# Uvod
+
+Pogledali bomo osnovni workflow v Git za enega uporabnika, ki želi imeti dostop do preteklih verzij dokumentov (predvsem mišljena koda računlaniških programov). Z Git bomo delali bomo s pomočjo grafičnega vmesnika SourceTree. Na koncu bomo izdelek "objavili" na GitHub.
+
+Predpogoji za delo:
+
+- osebni računalnik z Windows ali Mac OS
+- instaliran [Git](http://git-scm.com/)
+- instaliran [SourceTree](http://www.sourcetreeapp.com/)
+- odprt uporabniški račun na [GitHub](https://github.com/)
+
+# Uporaba
+
+## Osnovni koncepti
+
+Git je sistem za spremljanje verzij datotek, ki hrani vse pretekle verzije datotek, ki smo jih posebej "shranili" s pomočjo posebnega ukaza "commit". Vsa zgodovina je shranjena v (skriti) mapi imenovani ".git". Na disku je vedno vidna samo ena verzija datoteke - tista na kateri trenutno delamo. Do različnih verzij pridemo lahko s posebnimi ukazi, ki restavrirajo v aktivno mapo želeno verzijo. 
+
+Ni nujno, da so vse datoteke v mapi pod kontrolo Git - moramo jih eksplicitno dodati. Dodane datoteke potem Git spremlja. Preden jih "commitamo", jih moramo najprej dodati v "staging area", kjer čakajo na naš "commit". Konkreten potek bo viden tekom dela.
+
+## Pregled vmesnika SourceTree
+
+- zgoraj meniji z večino (vsemi?) ukazov
+- vrstica z ikonami, ki vsebuje pomembne ukaze (clone/new, commit, checkout, push)
+- na levi meni s seznamom repositorijev
+- na desni glavno okno s statusom datotek (zgodovina verzij, trenutno stanje datotek)
+
+## Prvi commit
+
+- odpremo SourceTree
+- odpremo nov repo s "Clone/New" 
+
+![Gumb za kreiranje novega repositorija](./figures/NewRepo.PNG)
+
+- izberemo "Create New Repository"; tip naj bo "Git"; "Destination Path" naj bo na lokalnem disku, kjer imamo kodo; "Name" naj bo poimenovanje projekta
+
+![Začetne nastavitve repositorija](./figures/RepoSetup.PNG)
+
+- kliknemo "Create"
+
+- če slučajno ne vidimo obstoječih datotek, izberemi prikaz "All files,..."
+
+![Izbira prikaza vseh datotek](./figures/DisplayAllFiles.PNG)
+
+- dodamo datoteke v Staging area, tako da jih odkljukamo
+- kliknemo "Commit" in vpišemo opis commita ter potrdimo z gumbom "Commit"
+
+
+## Nadaljni commiti
+
+Po vsaki primerni spremembi ponovimo koraka:
+
+- dodamo datoteke v Staging area, tako da jih odkljukamo
+- kliknemo "Commit" in vpišemo opis commita ter potrdimo z gumbom "Commit"
+
+
+# Push na GitHub
+
+Na GitHub moramo imeti odprt račun. Odpremo nov repositorij na zavihku "Repositories" s klikom na gumb "New".
+
+![Odpiranje novega GitHub repositorija](./figures/NewGitHubRepo.PNG)
+
+Vpišemo ime novega repositorija in izpolnimo ostale nastavitve ter potrdimo. Ko je repo odprt, poiščemo nekje na desni strani link s https naslovom repositorija, ki ga potrebujemo za vzpostaviti povezavo s SourceTree.
+
+![GitHub clone link](./figures/CloneURL.PNG)
+
+V SourceTree izberemo "Repository -> Add Remote...". Odpre se okno, kjer kliknemo "Add".
+
+![GitHub clone link](./figures/AddRepo2SourceTree.PNG)
+
+V naslednjem oknu vpišemo želeno ime remote repositorija (npr. "origin" ali pa "github") ter v URL polje prekopiramo pridobljeni link.
+
+![GitHub clone link](./figures/AddRepo2SourceTree2.PNG)
+
+Izpolnimo preostanek obrazca, večkrat potrdimo.
+
+Kliknemo na ikono "Push" in zberemo, kateri branch želimo pushati in na kateri server. (V našem preprostem scenariju vedno samo en branch in en server.)
+
+![GitHub clone link](./figures/Push.PNG)
+
+Potrdimo, preverimo na GitHub, če so vidne datoteke.
+Za nadaljne "pushe" seveda ponovimo samo zadnja dva koraka.
+
+# Uporabne povezave
+
+- Preprost a pregleden začetniški tečaj o uporabi Git [How to Use Git and GitHub](https://www.udacity.com/course/ud775)
+- [Git tuturial](http://git-scm.com/docs/gittutorial)
