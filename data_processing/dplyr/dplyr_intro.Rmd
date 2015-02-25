@@ -8,9 +8,7 @@ output:
     highlight: default
 ---
 
-Ko enkrat uvozimo podatke, je naslednji logični korak, da jih podrobneje spoznamo. Za to navadno uporabljamo tabelarične prikaze povzetkov ali pa s pomočjo slik. Za lažjo manipulacijo so razvili paket `dplyr`, ki nam pomaga pri pripravi podatkov za analiziranje.
-
-Na tej delavnici bomo stopali po stopinjah, kot so jih zagazili v [Introduction to dplyr for Faster Data Manipulation in R](https://rpubs.com/justmarkham/dplyr-tutorial).
+V tem tutorialu bomo stopali po stopinjah, kot so jih zagazili v [Introduction to dplyr for Faster Data Manipulation in R](https://rpubs.com/justmarkham/dplyr-tutorial).
 
 ```{r echo = FALSE}
 knitr::knit_hooks$set(inline = function(x) {
@@ -35,11 +33,11 @@ print(fl)
 
 Glagoli, ki jih uporabljamo za manipulacijo s podatki so:
 
- * `filter` izbira vrstice glede na pogoj
- * `select` izbira stolpce glede na pogoj
+ * `filter` izbira vrstice glede na argument
+ * `select` izbira stolpce glede na argument
  * `arrange` sortira podatke
- * `mutate` računa z obstoječimi spremenljivkami in po potrebi dodaja nove
- * `summarize` povzema spremenljivke
+ * `mutate` dodaja spremenljivke
+ * `summarize` povzema spremenljivke v eno številko
 
 ## filter
 
@@ -54,7 +52,6 @@ head(lex.jfk)
 dim(lex.jfk)
 
 lex.jfk <- filter(fl, Dest %in% c("LEX", "JFK"))
-# ali (za vajo lahko preveriš, če sta oba način res primerljiva)
 filter(fl, Dest == "LEX" | Dest == "JFK")
 
 ggplot(lex.jfk, aes(x = AirTime, y = ArrDelay)) +
@@ -81,7 +78,6 @@ summary(jan.ura)
 Poglejmo lete, kjer je nedvoumna oznaka letalske družbe UA ali YV, hkrati pa je čas potovanja krajši od dveh ur.
 ```{r}
 filter(fl, (UniqueCarrier == "UA" | UniqueCarrier == "YV") & ActualElapsedTime <= 120) # oklepaji!
-# (za vajo lahko razmisliš kako bi ta izraz zapisal/a z %in%)
 ```
 
 Kaj izberemo s tem ukazom?
@@ -101,13 +97,13 @@ ggplot(mis1, aes(x = DayOfWeek, y = ActualElapsedTime)) +
 ## select
 
 Izbiranje stolpcev; v pomoč so nam funkcije `starts_with`, `ends_with`, `matches` in `contains`.
-Za razliko od "osnovnega R-ja", znotraj funkcij ni potrebno pisati imena stolpcev v narekovajih. Podobnega pristopa smo vajeni že iz paketa `ggplot2`.
+Za razliko od "osnovnega R-ja", znotraj funkcij ni potrebno pisati imena stolpcev v narekovajih. Podobnega smo vajeni že iz paketa `ggplot2`.
 
 ```{r}
 fl[1:6, c("Year", "FlightNum", "Origin", "Diverted")]
 
+# dplyr način
 select(fl, Year, FlightNum, Origin, Diverted)
-# priročno, če stolpce izbiramo dinamično na podlagi spremenljivk
 select(fl, one_of(c("Year", "FlightNum", "Origin", "Diverted")))
 ```
 
@@ -123,7 +119,7 @@ select(fl, ends_with("Time"), starts_with("Taxi"))
 
 Stolpce lahko filtriramo tudi na podlagi izrazov (`regular expression`). Z ukazom `".th$"` izberemo vse stolpce, katerih imena se končajo s "th".
 ```{r}
-select(fl, matches("th$"))
+select(fl, matches(".th$"))
 ```
 
 Stolpce lahko izberemo tudi na osnovi pripone imena stolpca v `data.frame`-u.
@@ -131,9 +127,7 @@ Stolpce lahko izberemo tudi na osnovi pripone imena stolpca v `data.frame`-u.
 xy <- data.frame(envir1 = runif(5), envir2 = runif(5), envir3 = runif(5), envir4 = runif(5), envir5 = runif(5),
                  spec1 = runif(5), spec2 = runif(5), spec3 = runif(5), spec4 = runif(5), spec5 = runif(5))
 xy <- tbl_df(xy)
-xy
 select(xy, num_range("spec", 3:5))
-select(xy, num_range("spec", 1:3), num_range("envir", c(1, 3, 5)))
 ```
 
 
