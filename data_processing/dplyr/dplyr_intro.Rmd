@@ -1,6 +1,6 @@
 ---
-title: "Uvod v dplyr"
-author: "Roman Luštrik"
+title: "Uvod v ponovljivo znanost, dplyr in git"
+author: "Roman Luštrik in Črt Ahlin"
 date: "10.2.2015"
 output: 
   html_document:
