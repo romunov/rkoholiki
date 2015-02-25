@@ -27,6 +27,8 @@ Git je sistem za spremljanje zgodovine verzij datotek (ang. version control syst
 
 Ni nujno, da so vse datoteke v mapi pod kontrolo Git - moramo jih eksplicitno dodati. Dodane datoteke potem Git spremlja. Preden jih "commitamo", jih moramo najprej dodati v "staging area", kjer čakajo na naš "commit". Konkreten potek bo viden tekom dela.
 
+Git ima še mnogo možnosti, ki jih ne bomo obravnali. Večinoma pridejo v poštev pri skupinskem delu, kjer naj bi Git najbolj blestel.
+
 ## Pregled vmesnika SourceTree
 
 - zgoraj meniji z večino (vsemi?) ukazov
