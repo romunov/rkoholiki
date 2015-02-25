@@ -10,7 +10,7 @@ output:
 
 # Uvod
 
-Pogledali bomo osnovni workflow v Git za enega uporabnika, ki želi imeti dostop do preteklih verzij dokumentov (predvsem mišljena koda računlaniških programov). Z Git bomo delali bomo s pomočjo grafičnega vmesnika SourceTree. Na koncu bomo izdelek "objavili" na GitHub.
+Pogledali bomo osnovni potek dela v Git za enega uporabnika, ki želi imeti dostop do preteklih verzij dokumentov (predvsem mišljena koda računalniških programov). Z Git bomo delali bomo s pomočjo grafičnega vmesnika SourceTree. Na koncu bomo izdelek "objavili" na GitHub.
 
 Predpogoji za delo:
 
@@ -23,7 +23,7 @@ Predpogoji za delo:
 
 ## Osnovni koncepti
 
-Git je sistem za spremljanje verzij datotek, ki hrani vse pretekle verzije datotek, ki smo jih posebej "shranili" s pomočjo posebnega ukaza "commit". Vsa zgodovina je shranjena v (skriti) mapi imenovani ".git". Na disku je vedno vidna samo ena verzija datoteke - tista na kateri trenutno delamo. Do različnih verzij pridemo lahko s posebnimi ukazi, ki restavrirajo v aktivno mapo želeno verzijo. 
+Git je sistem za spremljanje zgodovine verzij datotek (ang. version control system ali VCS, tudi revision control system ali RVS), ki hrani vse pretekle verzije datotek, ki smo jih v neki točki izrecno "shranili" s pomočjo posebnega ukaza "commit". Vsa zgodovina je shranjena v (skriti) mapi imenovani ".git". Na disku je vedno vidna samo ena verzija datoteke - tista na kateri trenutno delamo. Do različnih verzij pridemo lahko s posebnimi ukazi, ki restavrirajo želeno verzijo v aktivno mapo. 
 
 Ni nujno, da so vse datoteke v mapi pod kontrolo Git - moramo jih eksplicitno dodati. Dodane datoteke potem Git spremlja. Preden jih "commitamo", jih moramo najprej dodati v "staging area", kjer čakajo na naš "commit". Konkreten potek bo viden tekom dela.
 
@@ -47,7 +47,7 @@ Ni nujno, da so vse datoteke v mapi pod kontrolo Git - moramo jih eksplicitno do
 
 - kliknemo "Create"
 
-- če slučajno ne vidimo obstoječih datotek, izberemi prikaz "All files,..."
+- če slučajno ne vidimo obstoječih datotek, izberemo prikaz "All files,..."
 
 ![Izbira prikaza vseh datotek](./figures/DisplayAllFiles.PNG)
 
