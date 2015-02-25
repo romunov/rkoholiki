@@ -1,6 +1,6 @@
 ---
-title: "Uvod v dplyr"
-author: "Roman Luštrik"
+title: "Uvod v ponovljivo znanost, dplyr in git"
+author: "Roman Luštrik in Črt Ahlin"
 date: "10.2.2015"
 output: 
   html_document:
@@ -199,12 +199,14 @@ pat <- fl %>%
 pat %>%
   mutate(PropAirTravel = round(PropAirTravel * 100) %>% paste("%"))
 
+# spremembe naredimo v dejanskih podatkih
 fl <- fl %>%
   mutate(PropAirTravel = round((AirTime/ActualElapsedTime)*100) %>% paste("%"))
 ```
 
 ## summarize/summarise
 
+Če potrebujemo različne statistike glede na spremenljivke, se poslužimo funkcije `summarize`. Ta funkcionalnost je še posebej koristna v navezi z `group_by`.
 ```{r}
 fl %>%
    summarize(mean = mean(AirTime, na.rm = TRUE),
@@ -220,34 +222,9 @@ stat1 %>%
   filter(UniqueCarrier == "AA")
 ```
 
-Če želimo prešteti število letov v posamezni skupini lahko uporabimo funkcijo  `n()`.
+Če želimo prešteti število letov (vrstic) v posamezni skupini (oz. kombinaciji skupin, če v `group_by` uporabimo več spremenljivk) lahko uporabimo funkcijo  `n()`.
 
 ```{r}
-fl %>%
-   group_by(DayofMonth) %>%
-   summarize(count = n())
-```
-
-Za štetje unikatnih vrednosti uporabimo funkcijo `n_distinct()`.
-
-```{r}
-fl %>%
-   group_by(DayofMonth) %>%
-   summarize(unikum = n_distinct(UniqueCarrier))
-```
-
-Bližnica za `n()` je `count`, ki vključuje že funkcijo `group_by()`.
-
-```{r}
-fl %>%
-   count(DayofMonth)
-```
-
-```{r}
-fl %>%
-   group_by(DayofMonth) %>%
-   n_groups()
- 
 fl %>%
    group_by(DayofMonth) %>%
    summarize(count = n())
@@ -256,6 +233,27 @@ fl %>%
 fl %>%
    group_by(DayofMonth) %>%
    group_size()
+```
+
+Bližnica za kombinacijo funkcij `n()` in `group_by` je `count`.
+
+```{r}
+fl %>%
+   count(DayofMonth)
+```
+
+Za štetje unikatnih vrednosti v posamezni skupni (oz. kombinaciji skupin, če v `group_by` uporabimo več spremenljivk) uporabimo funkcijo `n_distinct()`.
+
+```{r}
+fl %>%
+   group_by(DayofMonth) %>%
+   summarize(unikum = n_distinct(UniqueCarrier))
+```
+
+```{r}
+fl %>%
+   group_by(DayofMonth) %>%
+   n_groups()
 ```
 
 Za vsako destinacijo poiščemo koliko letal je opravilo koliko letov.
@@ -281,7 +279,7 @@ fl %>%
 Vzorčenje je relativno preprosto.
 
 ```{r}
-set.seed(357)
+set.seed(357) # nastavimo zaradi ponovoljivosti
 fl %>%
    sample_n(100)
 ```
@@ -296,7 +294,7 @@ fl %>%
 
 ## Podatkovne baze
 
-Včasih imamo podatke v različnih bazah, npr. MySQL, SQLite ipd. `dplyr` omogoča klicanje (ne pa tudi manipuliranja v bazi sami) podatkov, manipulacija pa je možna naknadno v R-ju.
+Včasih imamo podatke v različnih bazah, npr. MySQL, SQLite ipd. `dplyr` omogoča klicanje (ne pa tudi manipuliranja v bazi sami) podatkov, manipulacija pa je možna naknadno v R-ju. Poglejmo si primer z bazo SQLite.
 
 ```{r}
 # ustvarimo datoteko s končnico sqlite3
@@ -309,7 +307,7 @@ flights.db <- copy_to(my.db, flights, temporary = FALSE,
 
 # flights.db <- tbl(my.db, "flights")
 
-# dostop do baze, kjer kličemo tabelo "flights" eksplicitno
+# dostop do baze, kjer kličemo tabelo "flights" eksplicitno preko SQL stavka
 out <- tbl(my.db, sql("SELECT tailnum, distance FROM flights WHERE distance > 1000"))
 
 # neposreden dostop do tabele "flights"
