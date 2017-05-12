@@ -1,0 +1,37 @@
+---
+title: "Vzorčenje z zavračanjem"
+author: "Roman Luštrik"
+date: "12 maj 2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+```
+
+## Motivacija
+
+To gradivo v veliki meri črpam z bloga [Theoretical ecology](https://theoreticalecology.wordpress.com/2015/04/22/a-simple-explanation-of-rejection-sampling-in-r/), kjer je na sila preprost način predstavljen koncept in rešitev.
+
+Denimo, da imamo porazdelitev, za katero v R-ju ni generične funkcije (kot na primer za normalno, Weibullovo, t porazdelitev...). Iz te porazdelitve bi radi izračunali na primer določen kvantil. Ker je formula morda prekomplicirana, se lahko s problemom spopademo numerično.
+
+## Naša porazdelitev
+
+Denimo, da imamo porazdelitev
+
+$f(x) = e^{-(\frac{x}{\sigma})^{-b}} \cdot c$
+
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
