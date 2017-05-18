@@ -14,9 +14,9 @@ library(ggplot2)
 
 ## Motivacija
 
-To gradivo v veliki meri črpam z bloga [Theoretical ecology](https://theoreticalecology.wordpress.com/2015/04/22/a-simple-explanation-of-rejection-sampling-in-r/), kjer je na sila preprost način predstavljen koncept in rešitev.
+To gradivo v veliki meri črpam z bloga [Theoretical ecology](https://theoreticalecology.wordpress.com/2015/04/22/a-simple-explanation-of-rejection-sampling-in-r/), kjer je na sila preprost način predstavljen koncept in rešitev vzorčenja iz poljubnih porazdelitev.
 
-Denimo, da imamo porazdelitev, za katero v R-ju ni generične funkcije (kot na primer za normalno, Weibullovo, t porazdelitev...). Ker nimamo vseh pripravljenih orodij, ne moremo izračunati vseh lastnosti funkcije.
+Denimo, da imamo porazdelitev, za katero v R-ju ni generične funkcije (kot imamo na primer za normalno, Weibullovo, t porazdelitev...). Ker nimamo vseh pripravljenih orodij, ne moremo izračunati vseh lastnosti funkcije.
 
 Iz te naše porazdelitve bi radi izračunali določen kvantil, ali pa bi radi nabral le vzorec. Ker je formula morda prekomplicirana, se lahko s problemom spopademo numerično.
 
